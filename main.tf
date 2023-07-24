@@ -120,7 +120,7 @@ resource "azurerm_virtual_machine" "vm-win10" {
   #     connection {
   #       type     = "winrm"
   #       host     = azurerm_public_ip.example.ip_address
-  #       user     = "utah"
+  #       user     = "doecon"
   #       password = "E$2B%LA@Vout0EAI"
   #       https    = false
   #       insecure = true
