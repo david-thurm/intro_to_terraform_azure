@@ -2,7 +2,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "3.62.1"
+      version = "3.70.0"
     }
   }
 }
@@ -11,7 +11,6 @@ provider "azurerm" {
   # Configuration options
   features {}
 }
-
 
 resource "azurerm_resource_group" "rg-zerotrust" {
   name     = "zerotrust"
@@ -33,21 +32,21 @@ resource "azurerm_subnet" "subnet-zerotrust" {
 }
 
 resource "azurerm_network_security_group" "sg-zerotrust" {
-  name                = "nsg-rdp"
-  resource_group_name = azurerm_resource_group.rg-zerotrust.name
+  name                = "acceptanceTestSecurityGroup1"
   location            = azurerm_resource_group.rg-zerotrust.location
-
-  security_rule {
-    name                       = "ssh-rdp"
-    priority                   = 1001
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22,3389"
-    source_address_prefix      = "110.20.29.28"
-    destination_address_prefix = "*"
-  }
-  tags = {
-    environment = "dev"
+  resource_group_name = azurerm_resource_group.rg-zerotrust.name
+}
+ 
+resource "azurerm_network_security_rule" "sr-remote-access" {
+  name                        = "test123"
+  priority                    = 100
+  direction                   = "Outbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "22,3389"
+  source_address_prefix       = "110.20.25.3/32"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.rg-zerotrust.name
+  network_security_group_name = azurerm_network_security_group.sg-zerotrust.name
 }
