@@ -28,7 +28,7 @@ resource "azurerm_network_interface_security_group_association" "ubuntu-sga" {
 #############
 ## Ubuntu ###
 #############
-resource "azurerm_virtual_machine" "vm-ubuntu" {
+resource "azurerm_virtual_machine" "ubuntu" {
   name                             = "ubuntu"
   resource_group_name              = azurerm_resource_group.rg-zerotrust.name
   location                         = azurerm_resource_group.rg-zerotrust.location
@@ -39,8 +39,8 @@ resource "azurerm_virtual_machine" "vm-ubuntu" {
 
   os_profile {
     computer_name  = "ubuntu"
-    admin_username = "doe"
-    admin_password = "E$2B%LA@V27t0EAI"
+    admin_username = "doecon"
+    admin_password = "y&7CGB*6&fizH5ffzs7^"
   }
   os_profile_linux_config {
     disable_password_authentication = false
@@ -54,7 +54,7 @@ resource "azurerm_virtual_machine" "vm-ubuntu" {
   }
 
   storage_os_disk {
-    name              = "ubuntu-disk"
+    name              = "ubuntuos-disk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"
@@ -64,4 +64,7 @@ resource "azurerm_virtual_machine" "vm-ubuntu" {
   tags = {
     environment = "dev"
   }
+}
+output "ubuntu_public_ip_address" {
+  value = azurerm_public_ip.ubuntu.*.ip_address
 }
