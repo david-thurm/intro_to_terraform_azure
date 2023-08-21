@@ -38,35 +38,16 @@ resource "azurerm_network_security_group" "sg-zerotrust" {
   location            = azurerm_resource_group.rg-zerotrust.location
 
   security_rule {
-    name                       = "RDP"
+    name                       = "ssh-rdp"
     priority                   = 1001
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
     source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "205.0.0.8"
+    destination_port_range     = "22,3389"
+    source_address_prefix      = "110.20.29.28"
     destination_address_prefix = "*"
   }
-}
-
-resource "azurerm_public_ip" "pubip-win10" {
-  name                = "win10-public-ip"
-  resource_group_name = azurerm_resource_group.rg-zerotrust.name
-  location            = azurerm_resource_group.rg-zerotrust.location
-  allocation_method   = "Static"
-}
-
-resource "azurerm_network_interface" "vnic-win10" {
-  name                = "win10-nic"
-  resource_group_name = azurerm_resource_group.rg-zerotrust.name
-  location            = azurerm_resource_group.rg-zerotrust.location
-
-  ip_configuration {
-    name                          = "win10-nic-config"
-    subnet_id                     = azurerm_subnet.subnet-zerotrust.id
-    private_ip_address_allocation = "Static"
-    private_ip_address            = "172.22.0.5"
-    public_ip_address_id          = azurerm_public_ip.pubip-win10.id
-  }
+  tags = {
+    environment = "dev"
 }
