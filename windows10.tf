@@ -61,7 +61,7 @@ resource "azurerm_virtual_machine" "windows10" {
   tags = {
     environment = "dev"
   }
+}
 output "windows10_public_ip_address" {
   value = azurerm_public_ip.pubip-windows10.*.ip_address
-  }
 }
