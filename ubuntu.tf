@@ -66,5 +66,5 @@ resource "azurerm_virtual_machine" "ubuntu" {
   }
 }
 output "ubuntu_public_ip_address" {
-  value = azurerm_public_ip.ubuntu.*.ip_address
+  value = azurerm_public_ip.pubip-ubuntu.*.ip_address
 }
