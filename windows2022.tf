@@ -18,7 +18,7 @@ resource "azurerm_network_interface" "vnic-dc01" {
     subnet_id                     = azurerm_subnet.subnet-zerotrust.id
     private_ip_address_allocation = "Static"
     private_ip_address            = "172.22.0.5"
-    public_ip_address_id          = azurerm_public_ip.pubip-zerotrust.id
+    public_ip_address_id          = azurerm_public_ip.pubip-dc01.id
   }
 }
 ########################
@@ -57,5 +57,5 @@ resource "azurerm_virtual_machine" "dc01" {
   }
 }
 output "dc01_public_ip_address" {
-  value = azurerm_public_ip.dc01.*.ip_address
+  value = azurerm_public_ip.pubip-dc01.*.ip_address
 }
