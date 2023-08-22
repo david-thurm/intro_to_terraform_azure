@@ -52,7 +52,7 @@ resource "azurerm_virtual_machine" "windows10" {
   }
 
   storage_os_disk {
-    name              = "r2-windows10os-disk"
+    name              = "windows10os-disk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"

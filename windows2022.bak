@@ -17,7 +17,7 @@ resource "azurerm_network_interface" "vnic-dc01" {
     name                          = "dc01-nic-config"
     subnet_id                     = azurerm_subnet.subnet-zerotrust.id
     private_ip_address_allocation = "Static"
-    private_ip_address            = "172.22.0.5"
+    private_ip_address            = "172.22.0.6"
     public_ip_address_id          = azurerm_public_ip.pubip-dc01.id
   }
 }
@@ -30,6 +30,8 @@ resource "azurerm_virtual_machine" "dc01" {
   location              = azurerm_resource_group.rg-zerotrust.location
   vm_size               = "Standard_DS2_v2"
   network_interface_ids = [azurerm_network_interface.vnic-dc01.id]
+  delete_os_disk_on_termination    = true
+  delete_data_disks_on_termination = true
 
   os_profile {
     computer_name  = "dc01"
@@ -50,7 +52,7 @@ resource "azurerm_virtual_machine" "dc01" {
   }
 
   storage_os_disk {
-    name              = "my-os-disk"
+    name              = "windows2022os-disk"
     caching           = "ReadWrite"
     create_option     = "FromImage"
     managed_disk_type = "Premium_LRS"

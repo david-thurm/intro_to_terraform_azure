@@ -9,7 +9,11 @@ terraform {
 
 provider "azurerm" {
   # Configuration options
-  features {}
+  features {
+    resource_group {
+      prevent_deletion_if_contains_resources = false
+    }
+  }
 }
 
 resource "azurerm_resource_group" "rg-zerotrust" {
@@ -25,7 +29,7 @@ resource "azurerm_virtual_network" "vnet-zerotrust" {
 }
 
 resource "azurerm_subnet" "subnet-zerotrust" {
-  name                 = "my-subnet"
+  name                 = "zerotrust-subnet"
   resource_group_name  = azurerm_resource_group.rg-zerotrust.name
   virtual_network_name = azurerm_virtual_network.vnet-zerotrust.name
   address_prefixes     = ["172.22.0.0/24"]
@@ -36,7 +40,7 @@ resource "azurerm_network_security_group" "sg-zerotrust" {
   location            = azurerm_resource_group.rg-zerotrust.location
   resource_group_name = azurerm_resource_group.rg-zerotrust.name
 }
- 
+
 resource "azurerm_network_security_rule" "sr-ssh-access" {
   name                        = "ssh-access"
   priority                    = 100
@@ -45,7 +49,7 @@ resource "azurerm_network_security_rule" "sr-ssh-access" {
   protocol                    = "Tcp"
   source_port_range           = "*"
   destination_port_range      = "22"
-  source_address_prefix       = "104.28.153.88/32"
+  source_address_prefix       = "104.28.252.3/32"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.rg-zerotrust.name
   network_security_group_name = azurerm_network_security_group.sg-zerotrust.name
@@ -58,14 +62,27 @@ resource "azurerm_network_security_rule" "sr-rdp-access" {
   protocol                    = "Tcp"
   source_port_range           = "*"
   destination_port_range      = "3389"
-  source_address_prefix       = "104.28.153.88/32"
+  source_address_prefix       = "104.28.252.3/32"
+  destination_address_prefix  = "*"
+  resource_group_name         = azurerm_resource_group.rg-zerotrust.name
+  network_security_group_name = azurerm_network_security_group.sg-zerotrust.name
+}
+resource "azurerm_network_security_rule" "sr-http-access" {
+  name                        = "http-access"
+  priority                    = 102
+  direction                   = "Inbound"
+  access                      = "Allow"
+  protocol                    = "Tcp"
+  source_port_range           = "*"
+  destination_port_range      = "80"
+  source_address_prefix       = "104.28.252.3/32"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.rg-zerotrust.name
   network_security_group_name = azurerm_network_security_group.sg-zerotrust.name
 }
 resource "azurerm_network_security_rule" "outbound-access" {
   name                        = "outbound-access"
-  priority                    = 102
+  priority                    = 200
   direction                   = "Outbound"
   access                      = "Allow"
   protocol                    = "Tcp"
