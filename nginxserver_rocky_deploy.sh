@@ -28,8 +28,9 @@ sudo cat > /usr/share/nginx/html/index.html << EOF1
     <head>
         <title>Welcome to Intro to Terraform on Azure!</title>
     </head>
-    <body>
-        <p>Thank you for visiting</b>!</p>
+    <body><font size="20"> 
+        <p>Welcome to Intro to Terraform on Azure!</b>!</p>
+        </font> 
     </body>
 </html>
 EOF1
@@ -94,14 +95,15 @@ http {
    server {
        listen       443 ssl http2;
        listen       [::]:443 ssl http2;
-       server_name  _;
+       server_name  terraform.energy.gov;
        root         /usr/share/nginx/html;
 
        ssl_certificate "/etc/pki/nginx/server.crt";
        ssl_certificate_key "/etc/pki/nginx/private/server.key";
        ssl_session_cache shared:SSL:1m;
        ssl_session_timeout  10m;
-       ssl_ciphers PROFILE=SYSTEM;
+       ssl_protocols TLSv1.3;
+       ssl_ciphers HIGH;
        ssl_prefer_server_ciphers on;
 
        # Load configuration files for the default server block.
@@ -134,12 +136,12 @@ L=Germantown
 O=doe
 OU=local_RootCA
 emailAddress=ikke@server.germantown
-CN = server.germantown
+CN = terraform.energy.gov
 EOF3
 
 sudo mkdir /etc/pki/nginx/private/
 sudo openssl req -new -sha256 -nodes -out /etc/pki/nginx/server.csr -newkey rsa:2048 -keyout /etc/pki/nginx/private/server.key -config ~/server_rootCA.csr.cnf  
 sudo openssl x509 -signkey /etc/pki/nginx/private/server.key -in /etc/pki/nginx/server.csr -req -days 365 -out /etc/pki/nginx/server.crt
 sudo chown -R  nginx:nginx /usr/share/nginx/
-sudo chown -R  nginx:nginx /usr/share/nginx/
-sudo chown -R  nginx:nginx /etc/pki/nginx/private/
+sudo chown -R  nginx:nginx /etc/pki/nginx/
+sudo systemctl restart nginx
