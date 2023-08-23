@@ -25,9 +25,9 @@ resource "azurerm_network_interface_security_group_association" "rocky-sga" {
   network_interface_id      = azurerm_network_interface.vnic-rocky.id
   network_security_group_id = azurerm_network_security_group.sg-zerotrust.id
 }
-###########
-# Rocky ###
-###########
+#############
+### Rocky ###
+#############
 resource "azurerm_virtual_machine" "rocky" {
   name                             = "rocky"
   resource_group_name              = azurerm_resource_group.rg-zerotrust.name
